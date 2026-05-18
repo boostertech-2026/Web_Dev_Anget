@@ -1,0 +1,471 @@
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #f0f0f0;
+
+  --accent: #111111;
+  --accent-hover: #333333;
+  --green: #22c55e;
+  --red: #ef4444;
+  --orange: #f59e0b;
+
+  --text-primary: #111111;
+  --text-secondary: #555555;
+  --text-muted: #888888;
+
+  --border: #e0e0e0;
+  --border-light: #eeeeee;
+
+  /* Element Plus overrides */
+  --el-bg-color: #ffffff;
+  --el-bg-color-overlay: #ffffff;
+  --el-fill-color-blank: #ffffff;
+  --el-fill-color: #f8f9fa;
+  --el-fill-color-light: #f5f5f5;
+  --el-border-color: #e0e0e0;
+  --el-border-color-light: #eeeeee;
+  --el-text-color-primary: #111111;
+  --el-text-color-regular: #111111;
+  --el-text-color-secondary: #555555;
+  --el-text-color-placeholder: #888888;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cccccc;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #aaaaaa;
+}
+
+h1 { font-size: 28px; font-weight: 700; }
+h2 { font-size: 22px; font-weight: 600; }
+h3 { font-size: 18px; font-weight: 600; }
+h4 { font-size: 16px; font-weight: 600; }
+h5 { font-size: 14px; font-weight: 600; }
+h6 { font-size: 13px; font-weight: 600; }
+
+p { margin: 0; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 0.7;
+}
+
+/* ---- Buttons ---- */
+.el-button {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 18px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.el-button--small {
+  font-size: 12px;
+  padding: 6px 14px;
+}
+
+.el-button--large {
+  font-size: 15px;
+  padding: 11px 24px;
+}
+
+.el-button--primary {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: #ffffff;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.el-button--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #ffffff;
+  transform: none;
+  box-shadow: none;
+}
+
+.el-button--danger {
+  background: var(--red);
+  border: 1px solid var(--red);
+  color: #ffffff;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.el-button--danger:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+  transform: none;
+  box-shadow: none;
+}
+
+.el-button--success {
+  background: var(--green);
+  border: 1px solid var(--green);
+  color: #ffffff;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.el-button--success:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
+  transform: none;
+  box-shadow: none;
+}
+
+.el-button--info {
+  background: #555555;
+  border: 1px solid #555555;
+  color: #ffffff;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.el-button--info:hover {
+  background: #333333;
+  border-color: #333333;
+  color: #ffffff;
+  transform: none;
+  box-shadow: none;
+}
+
+.el-button--default {
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+  color: var(--text-primary);
+}
+
+.el-button--default:hover {
+  background: #f5f5f5;
+  border-color: #aaaaaa;
+  color: var(--text-primary);
+}
+
+/* ---- Tags ---- */
+.el-tag {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* ---- Message Box ---- */
+.el-message-box {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.el-message-box__title {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.el-message-box__content {
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.el-message-box__btns {
+  padding-top: 16px;
+}
+
+.el-message-box__btns .el-button {
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 13px;
+}
+
+.el-message-box__btns .el-button--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+/* ---- Message ---- */
+.el-message {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.el-message--success .el-message__content { color: var(--green); }
+.el-message--error .el-message__content { color: var(--red); }
+.el-message--warning .el-message__content { color: var(--orange); }
+.el-message--info .el-message__content { color: var(--text-secondary); }
+
+/* ---- Dialog ---- */
+.el-dialog {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.el-dialog__header {
+  border-bottom: 1px solid var(--border-light);
+  padding: 16px 24px;
+}
+
+.el-dialog__title {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.el-dialog__body {
+  padding: 24px;
+  font-size: 14px;
+}
+
+.el-dialog__footer {
+  padding: 14px 24px;
+  border-top: 1px solid var(--border-light);
+}
+
+/* ---- Card ---- */
+.el-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: none;
+}
+
+.el-card__header {
+  border-bottom: 1px solid var(--border-light);
+  padding: 16px 24px;
+  font-size: 15px;
+}
+
+.el-card__body {
+  padding: 24px;
+  border-radius: 0 0 8px 8px;
+}
+
+/* ---- Descriptions ---- */
+.el-descriptions {
+  --el-descriptions-table-border: 1px solid var(--border);
+}
+
+.el-descriptions__label {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.el-descriptions__content {
+  background: #ffffff;
+  color: var(--text-primary);
+}
+
+/* ---- Form ---- */
+.el-form-item {
+  margin-bottom: 18px;
+}
+
+.el-form-item__label {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 36px;
+}
+
+.el-input__wrapper {
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  box-shadow: none;
+  transition: border-color 0.2s;
+  padding: 4px 12px;
+}
+
+.el-input__wrapper:hover {
+  border-color: #aaaaaa;
+}
+
+.el-input__wrapper.is-focus {
+  border-color: var(--accent);
+  box-shadow: none;
+}
+
+.el-input__inner {
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.el-input__inner::placeholder {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* ---- Radio / Checkbox ---- */
+.el-radio__label {
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.el-radio__input.is-checked .el-radio__inner {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.el-checkbox__label {
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.el-checkbox__input.is-checked .el-checkbox__inner {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ---- Select ---- */
+.el-select {
+  font-size: 14px;
+}
+
+.el-select .el-input__wrapper {
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+}
+
+.el-select-dropdown {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.el-select-dropdown__item {
+  color: var(--text-primary);
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.el-select-dropdown__item:hover {
+  background: var(--bg-secondary);
+}
+
+.el-select-dropdown__item.selected {
+  color: var(--accent);
+  background: var(--bg-secondary);
+  font-weight: 600;
+}
+
+/* ---- Table ---- */
+.el-table {
+  font-size: 13px;
+  --el-table-bg-color: transparent;
+  --el-table-tr-bg-color: transparent;
+  --el-table-header-bg-color: #f8f9fa;
+  --el-table-row-hover-bg-color: #f5f5f5;
+  --el-table-border-color: #eeeeee;
+}
+
+.el-table th {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.el-table td {
+  padding: 12px 0;
+  font-size: 13px;
+}
+
+/* ---- Pagination ---- */
+.el-pagination {
+  font-size: 13px;
+  padding: 16px 0;
+}
+
+.el-pager li {
+  font-size: 13px;
+  padding: 0 10px;
+  height: 28px;
+  line-height: 28px;
+}
+
+/* ---- Menu ---- */
+.el-menu-item {
+  font-size: 14px;
+  height: 44px;
+  line-height: 44px;
+}
+
+.el-menu-item span {
+  font-size: 14px;
+}
+
+.el-header {
+  padding: 0 24px;
+  height: 56px;
+}
+
+.el-aside {
+  font-size: 14px;
+}
+
+.el-main {
+  padding: 24px;
+  font-size: 14px;
+}
+
+.el-footer {
+  padding: 0 24px;
+  height: 56px;
+}
+
+/* ---- Empty ---- */
+.el-empty__description {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* ---- Loading ---- */
+.el-loading-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+}

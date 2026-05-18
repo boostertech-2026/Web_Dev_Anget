@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Python virtual env
+.venv/
+
+# SQLite database
+*.db
+
+# Environment files
+.env
+.env.local
+
+# Go build artifacts
+*.exe
+*.test
+*.out
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# Backup directory (generated at runtime)
+/var/backup/
