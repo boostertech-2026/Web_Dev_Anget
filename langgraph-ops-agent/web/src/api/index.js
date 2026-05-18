@@ -72,4 +72,8 @@ export const checkIpmiConnectivity = (id) => api.post(`/host/${id}/ipmi/check`)
 export const sshConnect = (hostId) => api.post('/ssh/connect', { host_id: hostId })
 export const sshExecute = (hostId, command) => api.post('/ssh/execute', { host_id: hostId, command })
 
+// Audit
+export const getAuditLogs = (params) => api.get('/audit/list', { params })
+export const getAuditLog = (id) => api.get(`/audit/${id}`)
+
 export default api

@@ -5,7 +5,7 @@
 ## 项目结构
 
 ```
-langgraph-ops-agent/
+eino-ops-agent/
 ├── web/                          # Vue 3 前端
 │   ├── src/
 │   │   ├── api/index.js          # API 封装

@@ -2,14 +2,19 @@ package main
 
 import (
 	"log"
-	"langgraph-ops-server/agent"
-	"langgraph-ops-server/models"
-	"langgraph-ops-server/routes"
+	"time"
+
+	"eino-ops-server/agent"
+	"eino-ops-server/models"
+	"eino-ops-server/routes"
 )
 
 func main() {
 	models.InitDB()
 	agent.InitGraph()
+
+	// Start periodic host health check (every 60 seconds)
+	agent.StartHealthCheck(60 * time.Second)
 
 	r := routes.SetupRouter()
 	log.Println("Server starting on :8080")

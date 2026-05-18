@@ -47,6 +47,9 @@
           <el-menu-item index="/main/errors">
             <span>错误历史</span>
           </el-menu-item>
+          <el-menu-item index="/main/audit">
+            <span>操作审计</span>
+          </el-menu-item>
         </el-menu>
         <div class="sidebar-footer">
           <div class="user-info">

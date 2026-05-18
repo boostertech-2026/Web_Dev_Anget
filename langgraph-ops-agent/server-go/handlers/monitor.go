@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"langgraph-ops-server/models"
+	"eino-ops-server/models"
 	"strings"
 
 	"github.com/gin-gonic/gin"

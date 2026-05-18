@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"time"
 
-	"langgraph-ops-server/agent"
-	"langgraph-ops-server/models"
+	"eino-ops-server/agent"
+	"eino-ops-server/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -78,6 +78,15 @@ func AgentChat(c *gin.Context) {
 	if finalState.Plan != "" {
 		sendSSE(c.Writer, "plan", map[string]string{"content": finalState.Plan})
 	}
+
+	// Emit approval request if high-risk operation detected and not yet approved
+	if finalState.RequireApproval && !finalState.Approved {
+		sendSSE(c.Writer, "require_approval", map[string]interface{}{
+			"message":  "检测到高危操作，需要人工确认",
+			"thread_id": threadID,
+		})
+	}
+
 	if finalState.FinalAnswer != "" {
 		sendSSE(c.Writer, "done", map[string]string{
 			"report": finalState.FinalAnswer,
@@ -87,6 +96,14 @@ func AgentChat(c *gin.Context) {
 		sendSSE(c.Writer, "done", map[string]string{
 			"report":    "Agent completed processing.",
 			"thread_id": threadID,
+		})
+	}
+
+	// Emit backup info if available
+	if finalState.BackupPath != "" {
+		sendSSE(c.Writer, "backup_info", map[string]string{
+			"path":    finalState.BackupPath,
+			"summary": finalState.BackupResults,
 		})
 	}
 

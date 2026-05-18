@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"langgraph-ops-server/agent/tools"
-	"langgraph-ops-server/models"
+	"eino-ops-server/agent/tools"
+	"eino-ops-server/models"
 
 	"gorm.io/gorm"
 )

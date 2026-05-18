@@ -50,6 +50,18 @@
         </div>
       </div>
 
+      <!-- Approval bar -->
+      <div v-if="pendingApproval" class="approval-bar">
+        <span class="approval-icon">⚠️</span>
+        <span class="approval-text">检测到高危操作，需要人工确认后才能执行</span>
+        <el-button type="danger" size="small" @click="approve" :loading="store.thinking">
+          确认执行
+        </el-button>
+        <el-button size="small" @click="cancelApproval" :disabled="store.thinking">
+          取消
+        </el-button>
+      </div>
+
       <div class="chat-input-area">
         <el-input
           v-model="inputMsg"
@@ -111,6 +123,8 @@ const inputMsg = ref('')
 const msgContainer = ref(null)
 let reader = null
 let abortCtrl = null
+const pendingApproval = ref(false)
+let lastMessage = ''
 
 const showSettings = ref(false)
 const llmSettings = ref({
@@ -134,13 +148,90 @@ const formatTime = (ts) => {
 
 const renderContent = (text) => {
   if (!text) return ''
-  return text
-    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre class="code-block"><code>$2</code></pre>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>')
-    .replace(/\n/g, '<br>')
+  // Process code blocks first (protect from other rules)
+  const codeBlocks = []
+  let html = text.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
+    codeBlocks.push(`<pre class="code-block"><code>${escHtml(code)}</code></pre>`)
+    return `%%CODEBLOCK_${codeBlocks.length - 1}%%`
+  })
+
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>')
+
+  // Bold and italic
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>')
+
+  // Headings
+  html = html.replace(/^### (.+)$/gm, '<h4 class="md-heading">$1</h4>')
+  html = html.replace(/^## (.+)$/gm, '<h3 class="md-heading">$1</h3>')
+  html = html.replace(/^# (.+)$/gm, '<h3 class="md-heading">$1</h3>')
+
+  // Horizontal rules
+  html = html.replace(/^---$/gm, '<hr class="md-hr">')
+
+  // Tables — convert markdown table to HTML
+  html = html.replace(/(\|[^\n]+\|\n\|[-:\|\s]+\|\n((?:\|[^\n]+\|\n?)*))/gm, (match) => {
+    const lines = match.trim().split('\n')
+    if (lines.length < 2) return match
+    const headers = lines[0].split('|').filter(c => c.trim()).map(c => `<th>${c.trim()}</th>`).join('')
+    const bodyLines = lines.slice(2).map(line => {
+      const cells = line.split('|').filter(c => c.trim()).map(c => `<td>${c.trim()}</td>`).join('')
+      return `<tr>${cells}</tr>`
+    }).join('')
+    return `<table class="md-table"><thead><tr>${headers}</tr></thead><tbody>${bodyLines}</tbody></table>`
+  })
+
+  // Numbered lists — group consecutive numbered lines
+  html = html.replace(/((?:^\d+\.\s+.+\n?)+)/gm, (match) => {
+    const items = match.trim().split('\n').map(line =>
+      line.replace(/^\d+\.\s+(.+)$/, '<li>$1</li>')
+    ).join('')
+    return `<ol class="md-list">${items}</ol>`
+  })
+
+  // Unordered lists — group consecutive - or * lines
+  html = html.replace(/((?:^[-*]\s+.+\n?)+)/gm, (match) => {
+    const items = match.trim().split('\n').map(line =>
+      line.replace(/^[-*]\s+(.+)$/, '<li>$1</li>')
+    ).join('')
+    return `<ul class="md-list">${items}</ul>`
+  })
+
+  // Blockquotes
+  html = html.replace(/^>\s?(.+)$/gm, '<blockquote class="md-quote">$1</blockquote>')
+
+  // Merge consecutive blockquotes
+  html = html.replace(/<\/blockquote>\n<blockquote class="md-quote">/g, '\n')
+
+  // Double newlines → paragraph breaks
+  html = html.replace(/\n\n/g, '</p><p>')
+  // Single newlines → <br>
+  html = html.replace(/\n/g, '<br>')
+
+  // Wrap in paragraph if not already
+  if (!html.startsWith('<')) {
+    html = '<p>' + html
+  }
+  if (!html.endsWith('>') || html.endsWith('</br>')) {
+    html = html + '</p>'
+  }
+
+  // Restore code blocks
+  html = html.replace(/%%CODEBLOCK_(\d+)%%/g, (_, i) => codeBlocks[parseInt(i)] || '')
+
+  // Clean up empty paragraphs
+  html = html.replace(/<p><\/p>/g, '')
+  html = html.replace(/<p><br><\/p>/g, '<br>')
+
+  return html
 }
+
+const escHtml = (s) => s
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
 
 const scrollBottom = async () => {
   await nextTick()
@@ -154,13 +245,17 @@ const sendQuick = (text) => {
   send()
 }
 
-const send = async () => {
-  const text = inputMsg.value.trim()
+const send = async (approved = false) => {
+  const text = inputMsg.value.trim() || lastMessage
   if (!text || store.thinking) return
 
-  store.addMessage('user', text)
-  inputMsg.value = ''
+  if (!approved) {
+    store.addMessage('user', text)
+    lastMessage = text
+    inputMsg.value = ''
+  }
   store.setThinking(true)
+  pendingApproval.value = false
   await scrollBottom()
 
   store.addMessage('agent', '')
@@ -179,6 +274,7 @@ const send = async () => {
       body: JSON.stringify({
         message: text,
         thread_id: store.threadId,
+        approved: approved,
         llm_config: llmSettings.value.api_key ? {
           api_key: llmSettings.value.api_key,
           base_url: llmSettings.value.base_url || undefined,
@@ -247,6 +343,14 @@ const handleSSE = (parsed, agentMsg, evType) => {
     case 'plan':
       agentMsg.content = parsed.content || ''
       break
+    case 'require_approval':
+      pendingApproval.value = true
+      agentMsg.content += '\n\n⚠️ 此操作涉及高危动作，需要人工确认。请点击下方的 [确认执行] 或 [取消]。'
+      store.threadId = parsed.thread_id || store.threadId
+      break
+    case 'backup_info':
+      agentMsg.content += `\n\n📦 版本快照已创建\n路径: ${parsed.path}\n${parsed.summary || ''}`
+      break
     case 'done':
       agentMsg.content = parsed.report || parsed.content || ''
       store.threadId = parsed.thread_id || store.threadId
@@ -269,6 +373,15 @@ const handleSSE = (parsed, agentMsg, evType) => {
     store.threadId = parsed.thread_id
   }
   scrollBottom()
+}
+
+const approve = () => {
+  send(true)
+}
+
+const cancelApproval = () => {
+  pendingApproval.value = false
+  store.addMessage('system', '已取消高危操作，如需继续请重新输入指令。')
 }
 
 onUnmounted(() => {
@@ -472,6 +585,54 @@ onUnmounted(() => {
   color: #111111;
 }
 
+.msg-content :deep(.md-heading) {
+  margin: 16px 0 8px;
+  color: #222;
+}
+
+.msg-content :deep(.md-hr) {
+  border: none;
+  border-top: 1px solid #e5e5e5;
+  margin: 12px 0;
+}
+
+.msg-content :deep(.md-list) {
+  margin: 8px 0;
+  padding-left: 24px;
+}
+
+.msg-content :deep(.md-list li) {
+  margin-bottom: 4px;
+  line-height: 1.7;
+}
+
+.msg-content :deep(.md-quote) {
+  border-left: 3px solid #d0d0d0;
+  padding-left: 12px;
+  color: #777;
+  margin: 8px 0;
+}
+
+.msg-content :deep(.md-table) {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 8px 0;
+  font-size: 13px;
+}
+
+.msg-content :deep(.md-table th) {
+  background: #f5f5f5;
+  border: 1px solid #e5e5e5;
+  padding: 6px 10px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.msg-content :deep(.md-table td) {
+  border: 1px solid #e5e5e5;
+  padding: 6px 10px;
+}
+
 .msg-tool {
   margin-top: 8px;
   padding: 8px 12px;
@@ -524,6 +685,26 @@ onUnmounted(() => {
 
 .tool-active {
   color: #888888;
+  font-size: 13px;
+}
+
+.approval-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: #fff3cd;
+  border-top: 1px solid #ffc107;
+  flex-shrink: 0;
+}
+
+.approval-icon {
+  font-size: 18px;
+}
+
+.approval-text {
+  flex: 1;
+  color: #856404;
   font-size: 13px;
 }
 

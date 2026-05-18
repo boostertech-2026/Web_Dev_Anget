@@ -10,9 +10,9 @@ import (
 	"sync"
 	"time"
 
-	"langgraph-ops-server/agent"
-	"langgraph-ops-server/middleware"
-	"langgraph-ops-server/models"
+	"eino-ops-server/agent"
+	"eino-ops-server/middleware"
+	"eino-ops-server/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -815,4 +815,52 @@ func appendTaskLog(taskID uint, line string) {
 	}
 	logs += line
 	models.DB.Model(&models.Task{}).Where("id = ?", taskID).Update("logs", logs)
+}
+
+// ---- Audit log handlers ----
+
+// GetAuditLogs returns a paginated list of audit logs.
+func GetAuditLogs(c *gin.Context) {
+	threadID := c.Query("thread_id")
+	status := c.Query("status")
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 || pageSize > 100 {
+		pageSize = 20
+	}
+
+	db := models.DB.Model(&models.AuditLog{})
+	if threadID != "" {
+		db = db.Where("thread_id = ?", threadID)
+	}
+	if status != "" {
+		db = db.Where("status = ?", status)
+	}
+
+	var total int64
+	db.Count(&total)
+
+	var logs []models.AuditLog
+	db.Order("id desc").Offset((page - 1) * pageSize).Limit(pageSize).Find(&logs)
+
+	c.JSON(http.StatusOK, gin.H{
+		"data":      logs,
+		"total":     total,
+		"page":      page,
+		"page_size": pageSize,
+	})
+}
+
+// GetAuditLog returns a single audit log by ID.
+func GetAuditLog(c *gin.Context) {
+	id := c.Param("id")
+	var log models.AuditLog
+	if err := models.DB.First(&log, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "audit log not found"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": log})
 }

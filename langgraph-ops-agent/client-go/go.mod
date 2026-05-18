@@ -1,4 +1,4 @@
-module langgraph-ops-client
+module eino-ops-client
 
 go 1.21
 

@@ -5,8 +5,8 @@ import (
 	"log"
 	"sync"
 
-	"langgraph-ops-server/agent/tools"
-	"langgraph-ops-server/models"
+	"eino-ops-server/agent/tools"
+	"eino-ops-server/models"
 
 	"github.com/cloudwego/eino/components/tool"
 	"github.com/cloudwego/eino/compose"

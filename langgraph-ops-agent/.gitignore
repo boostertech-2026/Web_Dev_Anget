@@ -6,6 +6,7 @@ dist/
 *.log
 .DS_Store
 *.db
+.claude/
 __pycache__/
 *.py[cod]
 *.exe

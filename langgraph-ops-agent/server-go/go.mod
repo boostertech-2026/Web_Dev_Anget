@@ -1,4 +1,4 @@
-module langgraph-ops-server
+module eino-ops-server
 
 go 1.21
 

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"langgraph-ops-server/agent/tools"
+	"eino-ops-server/agent/tools"
 
 	"github.com/cloudwego/eino/components/model"
 	einoTool "github.com/cloudwego/eino/components/tool"

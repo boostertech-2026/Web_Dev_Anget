@@ -13,6 +13,7 @@ import SystemMonitor from './views/SystemMonitor.vue'
 import TrafficMonitor from './views/TrafficMonitor.vue'
 import AlertCenter from './views/AlertCenter.vue'
 import ErrorHistory from './views/ErrorHistory.vue'
+import AuditLog from './views/AuditLog.vue'
 
 const routes = [
   {
@@ -92,6 +93,11 @@ const routes = [
         path: 'errors',
         name: 'ErrorHistory',
         component: ErrorHistory
+      },
+      {
+        path: 'audit',
+        name: 'AuditLog',
+        component: AuditLog
       }
     ]
   }

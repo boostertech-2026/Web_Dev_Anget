@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"langgraph-ops-server/handlers"
-	"langgraph-ops-server/middleware"
+	"eino-ops-server/handlers"
+	"eino-ops-server/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -68,6 +68,13 @@ func SetupRouter() *gin.Engine {
 				errors.GET("", handlers.GetErrorHistory)
 				errors.GET("/stats", handlers.GetErrorStats)
 				errors.POST("/:id/resolve", handlers.ResolveError)
+			}
+
+			// Audit logs
+			audit := auth.Group("/audit")
+			{
+				audit.GET("/list", handlers.GetAuditLogs)
+				audit.GET("/:id", handlers.GetAuditLog)
 			}
 
 			task := auth.Group("/task")
