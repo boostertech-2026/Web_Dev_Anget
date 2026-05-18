@@ -40,7 +40,7 @@ func init() {
 }
 
 func main() {
-	log.Printf("Starting LangGraph Ops Client %d...", clientID)
+	log.Printf("Starting Eino Ops Client %d...", clientID)
 	log.Printf("Server: %s", serverAddr)
 
 	go heartbeatLoop()

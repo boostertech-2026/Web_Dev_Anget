@@ -18,9 +18,9 @@
 
 ### 1.3 Eino 智能 Agent 的核心能力
 
-Eino 是字节跳动 CloudWeGo 开源的 Go 语言 LLM 应用框架，对标 LangGraph。本项目选择 Eino 的核心理由：
+Eino 是字节跳动 CloudWeGo 开源的 Go 语言 LLM 应用框架，业界领先的 Agent 开发框架。本项目选择 Eino 的核心理由：
 
-相比于 Python LangGraph 方案，纯 Go 实现的优势：
+相比于 Python 同类方案，纯 Go 实现的优势：
 
 | 能力             | 说明                                         | 本项目应用                                 |
 | ---------------- | -------------------------------------------- | ------------------------------------------ |
@@ -231,7 +231,7 @@ Eino 智能 Agent (v3.0):
 ## 三、项目目录结构
 
 ```
-langgraph-ops-agent/
+eino-ops-agent/
 ├── web/                    # Vue 3 前端
 │   ├── src/
 │   │   ├── api/index.js    # API 封装 (axios 拦截器 + 全部接口)
